@@ -69,6 +69,8 @@ public class Peer {
                     if (BlockChainNet.isOk(this, proof)) {
                         MoneyBags.bags.get(address).addAndGet(5L);
                         Printer.println("Peer:"+this.name+".Proof:"+ proof +  ",hit hash:"+hash);
+                        Printer.println("");
+                        Printer.println("");
                     }
                 }
             }

@@ -50,7 +50,7 @@ public class BlockChainNet {
                 block.setTrade(currentTraddes);
                 block.setProof(proof);
 
-                Printer.println("block fount : "+JSON.toJSONString(block));
+                Printer.println("block found : "+JSON.toJSONString(block));
                 Printer.println("");
                 currentBlock = JSON.toJSONString(block);
                 currentProof = proof;
@@ -129,6 +129,7 @@ public class BlockChainNet {
     private static long previous = System.currentTimeMillis();
     private static void log(){
         if(System.currentTimeMillis() - previous >= 3000){
+            Printer.println("current bugs:");
             Printer.println(JSON.toJSONString(MoneyBags.bags,SerializerFeature.PrettyFormat));
             previous = System.currentTimeMillis();
         }
