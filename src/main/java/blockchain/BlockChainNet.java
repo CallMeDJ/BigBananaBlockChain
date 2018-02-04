@@ -3,6 +3,8 @@ package blockchain;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import utils.Printer;
 
 
@@ -18,12 +20,12 @@ public class BlockChainNet {
     public static Queue<Trade> currentTradePool = new LinkedList<>();
 
     public static String currentProof = "";
-    public static Set<Peer> peers = new ConcurrentSkipListSet<>();
+    public static Set<Peer> peers = new ConcurrentHashMap<>().newKeySet();
     public Block getBlock(String hash){
         return JSONObject.parseObject(blockPool.get(hash),Block.class);
     }
 
-    public static  int hard = 8;
+    public static  int hard = 12;
     public static  Lock lock = new ReentrantLock();
     public static boolean isOk(Peer peer , String proof){
         String hashed = MD5Utils.getMD5(currentProof+proof);
@@ -35,26 +37,31 @@ public class BlockChainNet {
 
                 lock.lock();
 
-                Trade trade = currentTradePool.poll();
+                List<Trade> currentTraddes = new ArrayList<>();
+                while(!currentTradePool.isEmpty()){
+                    currentTraddes.add(currentTradePool.poll());
+                }
 
                 Block block = new Block();
                 block.setHash(hashed);
-                block.setPrevious(currentBlock);
-                block.setTrade(trade);
+
+                Block previous = JSON.parseObject(currentBlock,new TypeReference<Block>(){});
+                block.setPrevious(previous.getHash());
+                block.setTrade(currentTraddes);
                 block.setProof(proof);
 
-                //Printer.print(block);
-                currentBlock = hashed;
+                Printer.println(JSON.toJSONString(block));
+                currentBlock = JSON.toJSONString(block);
                 currentProof = proof;
-                blockPool.put(hashed, block.toString());
+                blockPool.put(hashed, JSON.toJSONString(block));
                 //Printer.println(JSON.toJSONString(BlockChainNet.blockPool));
 
-                //Printer.println(currentTradePool.size());
+                Printer.println(currentTradePool.size());
 
-                if(currentTradePool.isEmpty()){
-                    Printer.println(blockPool);
-                    System.exit(0);
-                }
+//                if(currentTradePool.isEmpty()){
+//                    Printer.println(JSON.toJSONString(blockPool));
+//                    System.exit(0);
+//                }
                 lock.unlock();
                 return true;
             }
@@ -119,9 +126,9 @@ public class BlockChainNet {
             block.setProof(proof);
             block.setHash(hash);
 
-            currentBlock = block.toString();
+            currentBlock = JSON.toJSONString(block);
             currentProof = proof;
-            blockPool.put(hash,block.toString());
+            blockPool.put(hash,JSON.toJSONString(block));
 
     }
 
@@ -129,11 +136,6 @@ public class BlockChainNet {
     public static void main(String[] args){
         //初始化创世块
         INIT_THE_ONE_BLOCK();
-
-
-        for(int i = 0; i <200;i++){
-            BlockChainNet.currentTradePool.add(new Trade("a","b",2));
-        }
 
         for(int i = 0 ; i <10 ; i++) {
             final int index = i;
@@ -143,9 +145,20 @@ public class BlockChainNet {
             }).start();
         }
 
+        Scanner scanner = new Scanner(System.in);
+
+        while (scanner.hasNext()){
+            String a = scanner.nextLine();
+
+            String[] commans = a.split(" ");
+            Trade trade = new Trade();
+            trade.setFrom(commans[0]);
+            trade.setTo(commans[1]);
+            trade.setWhat(Long.valueOf(commans[2]));
+            currentTradePool.add(trade);
+        }
+
+
 
     }
-
-
-
 }

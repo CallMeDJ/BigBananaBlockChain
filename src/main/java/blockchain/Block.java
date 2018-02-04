@@ -2,11 +2,14 @@ package blockchain;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Block {
     private String proof;
     private String hash;
     private String previous;
-    private Trade trade;
+    private List<Trade> trade = new ArrayList<>();
 
 
     public String getProof() {
@@ -33,16 +36,12 @@ public class Block {
         this.previous = previous;
     }
 
-    public Trade getTrade() {
+    public List<Trade> getTrade() {
         return trade;
     }
 
-    public void setTrade(Trade trade) {
+    public void setTrade(List<Trade> trade) {
         this.trade = trade;
     }
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
 }

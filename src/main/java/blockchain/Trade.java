@@ -3,10 +3,10 @@ package blockchain;
 public class Trade {
     private String from;
     private String to;
-    private Integer what;
+    private Long what;
+    public Trade(){}
 
-
-    public Trade(String from, String to, Integer what) {
+    public Trade(String from, String to, Long what) {
         this.from = from;
         this.to = to;
         this.what = what;
@@ -28,11 +28,11 @@ public class Trade {
         this.to = to;
     }
 
-    public Integer getWhat() {
+    public Long getWhat() {
         return what;
     }
 
-    public void setWhat(Integer what) {
+    public void setWhat(Long what) {
         this.what = what;
     }
 }
