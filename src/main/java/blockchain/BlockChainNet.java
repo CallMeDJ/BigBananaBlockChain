@@ -50,18 +50,11 @@ public class BlockChainNet {
                 block.setTrade(currentTraddes);
                 block.setProof(proof);
 
-                Printer.println(JSON.toJSONString(block));
+                Printer.println("block fount : "+JSON.toJSONString(block));
+                Printer.println("");
                 currentBlock = JSON.toJSONString(block);
                 currentProof = proof;
                 blockPool.put(hashed, JSON.toJSONString(block));
-                //Printer.println(JSON.toJSONString(BlockChainNet.blockPool));
-
-                Printer.println(currentTradePool.size());
-
-//                if(currentTradePool.isEmpty()){
-//                    Printer.println(JSON.toJSONString(blockPool));
-//                    System.exit(0);
-//                }
                 lock.unlock();
                 return true;
             }
@@ -136,7 +129,7 @@ public class BlockChainNet {
     private static long previous = System.currentTimeMillis();
     private static void log(){
         if(System.currentTimeMillis() - previous >= 3000){
-            Printer.println(JSON.toJSONString(MoneyBags.bags));
+            Printer.println(JSON.toJSONString(MoneyBags.bags,SerializerFeature.PrettyFormat));
             previous = System.currentTimeMillis();
         }
     }
@@ -157,7 +150,6 @@ public class BlockChainNet {
         Scanner scanner = new Scanner(System.in);
 
         while (scanner.hasNext()){
-            log();
 
             String a = scanner.nextLine();
 
