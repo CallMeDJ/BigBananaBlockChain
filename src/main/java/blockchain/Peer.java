@@ -7,14 +7,46 @@ import utils.Printer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+
+
+/**
+ * @Author  大蕉
+ * @Since   2018-02-04
+ * @Desc    挖矿节点
+ */
 public class Peer {
+
+    /**
+     * Peer自己持有的区块链，其中 key 是hash值，value是JSON化的Block
+     */
     private  Map<String,String> blockPool  = new ConcurrentHashMap<>();
+
+    /**
+     * 区块链的当前块
+     */
     private ThreadLocal<String> currentBlock = new ThreadLocal<>();
+
+    /**
+     * 节点名字
+     */
     private String name;
+
+    /**
+     * 当前的工作量证明，用于进行 Hash。
+     */
     private ThreadLocal<String> currentProof = new ThreadLocal<>();
+
+    /**
+     * 节点拥有的钱包地址
+     */
     private String address = "";
 
     public static  Map<String,String> addresses = new ConcurrentHashMap<>();
+
+
+    /**
+     * 初始化一下各个节点的钱包位置，实际区块链应该由节点自己配置。
+     */
     static {
         addresses.put("peer4" , "a32ff571eccd55e2a3227140aa0f14bce7bda104e52aaabb41210db93c79aa71");
         addresses.put("peer1" , "5a022a58d8e2a0543494048ebc2d647f3fe7e8294f4192046f81daa02e083037");
@@ -29,25 +61,39 @@ public class Peer {
     }
 
 
-
+    /**
+     * 初始化一个节点，首先从区块网络上下载最新的完整区块链，然后把自己注册到网络中，并初始化当前块和当前工作量证明等。
+     */
     Peer(String name){
         this.blockPool = JSON.parseObject(JSON.toJSONString(BlockChainNet.blockPool),new TypeReference<Map<String, String>>(){});
         BlockChainNet.peers.add(this);
-        Block block = JSON.parseObject(BlockChainNet.currentBlock , new TypeReference<Block>(){});currentProof.set(block.getProof());
+        Block block = JSON.parseObject(BlockChainNet.currentBlock , new TypeReference<Block>(){});
+        currentProof.set(block.getProof());
+        currentBlock.set(BlockChainNet.currentBlock);
         this.name = name;
         this.address = addresses.get(name);
+
         //account.addAndGet(100L);
         Printer.println("Peer "+name+" 's address is: "+address);
     }
 
+
+    /**
+     * 若节点退出，将自己从区块链中注销
+     */
     @Override
     protected void finalize() throws Throwable {
         BlockChainNet.peers.remove(this);
         super.finalize();
     }
 
+
     public static boolean isDebug = false;
     private long previous = System.currentTimeMillis();
+
+    /**
+     * 每三秒打印一下自己的存活状态，debug用的
+     */
     private void log(){
         if(System.currentTimeMillis() - previous >= 3000){
             Printer.println(this.name + " alive");
@@ -55,6 +101,15 @@ public class Peer {
         }
     }
 
+
+    /**
+     * 核心程序，记账。（挖矿）
+     * 在自己的字典中产生随机数，然后跟上一个 proof 合起来作为下一次 Hash 的值，进行 Hash。（工作量证明）
+     * 自己检查这个 Hash 值是不是符合当前难度的。如果不符合继续计算。
+     * 如果符合，请求区块链网络进行检查。（共识算法）
+     * 检查通过往自己的钱包里加5个 大蕉币。（挖矿奖励）
+     *
+     */
     public void account(){
         while(true){
             String  proof = String.valueOf(Math.random() * (1000000));
@@ -75,6 +130,13 @@ public class Peer {
         }
     }
 
+    /**
+     *
+     * @param block
+     * @desc 若其他节点计算出区块了，那么区块网路会通知各个节点进行补充。
+     *       接收到请求就直接往自己的链上追加就行了。
+     */
+
     public void appendBlock(Block block){
         currentBlock.set(block.getHash());
         currentProof.set(block.getProof());
@@ -82,6 +144,12 @@ public class Peer {
        }
 
 
+    /**
+     *
+     * @param str
+     * @desc 当有节点计算出区块，区块链网络会发起投票。投票内容就是根据智能合约的内容进行检验，以证明当前的工作量证明是不是有效的。
+     * @return boolean
+     */
     public boolean vote(String str) {
         String hash = MD5Utils.getMD5(BlockChainNet.currentProof+str);
         return BlockChainNet.isHit(hash);

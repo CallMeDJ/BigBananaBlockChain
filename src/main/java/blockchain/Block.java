@@ -4,9 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Block {
+    /**
+     * 工作量证明
+     */
     private String proof;
+    /**
+     * 当前块的Hash值
+     */
     private String hash;
+
+    /**
+     * 上一个块的Hash值
+     */
     private String previous;
+
+    /**
+     * 这个块包含的交易
+     */
     private List<Trade> trade = new ArrayList<>();
 
 

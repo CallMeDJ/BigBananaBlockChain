@@ -4,9 +4,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * @Author  大蕉
+ * @Since   2018-02-04
+ * @Desc    区块链钱包
+ */
 public class MoneyBags {
     public static Map<String,AtomicLong> bags = new ConcurrentHashMap<>();
 
+    /**
+     * 初始化了十个钱包
+     */
     static{
         bags.put("8e531ea3e2f059c80c31ac36c6e08dbdd8f3db4dfb5da6921e42d09620b12b18",new AtomicLong());
         bags.put("3f3724572bd15aee097b666bcf46bb77aa6c808bdd9ccca1a44089610d1388e6",new AtomicLong());

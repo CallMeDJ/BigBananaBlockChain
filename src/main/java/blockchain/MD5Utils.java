@@ -3,6 +3,12 @@ package blockchain;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
+
+/**
+ * @Author  大蕉
+ * @Since   2018-02-04
+ * @Desc    Hash 值计算工具类
+ */
 public class MD5Utils {
     public static String getMD5(String str) {
         try {
