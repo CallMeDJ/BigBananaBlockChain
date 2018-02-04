@@ -14,7 +14,6 @@ public class Peer {
     private ThreadLocal<String> currentBlock = new ThreadLocal<>();
     private String name;
     private ThreadLocal<String> currentProof = new ThreadLocal<>();
-    private AtomicLong account = new AtomicLong();
     private String address = "";
 
     public static  Map<String,String> addresses = new ConcurrentHashMap<>();
@@ -68,7 +67,7 @@ public class Peer {
             if(BlockChainNet.isHit(hash)){
                 synchronized (this) {
                     if (BlockChainNet.isOk(this, proof)) {
-                        this.account.addAndGet(5L);
+                        MoneyBags.bags.get(address).addAndGet(5L);
                         Printer.println("Peer:"+this.name+".Proof:"+ proof +  ",hit hash:"+hash);
                     }
                 }

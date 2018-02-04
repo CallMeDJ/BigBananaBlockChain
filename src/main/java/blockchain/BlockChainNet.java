@@ -132,6 +132,15 @@ public class BlockChainNet {
 
     }
 
+    public static boolean isDebug = true;
+    private static long previous = System.currentTimeMillis();
+    private static void log(){
+        if(System.currentTimeMillis() - previous >= 3000){
+            Printer.println(JSON.toJSONString(MoneyBags.bags));
+            previous = System.currentTimeMillis();
+        }
+    }
+
 
     public static void main(String[] args){
         //初始化创世块
@@ -148,15 +157,25 @@ public class BlockChainNet {
         Scanner scanner = new Scanner(System.in);
 
         while (scanner.hasNext()){
+            log();
+
             String a = scanner.nextLine();
 
             String[] commans = a.split(" ");
-            Trade trade = new Trade();
-            trade.setFrom(commans[0]);
-            trade.setTo(commans[1]);
-            trade.setWhat(Long.valueOf(commans[2]));
+
+            String from = commans[0];
+            String to = commans[1];
+            Long what = Long.valueOf(commans[2]);
+            Trade trade = new Trade(from,to,what);
+            MoneyBags.bags.get(from).addAndGet(-1 * what);
+            MoneyBags.bags.get(to).addAndGet(what);
             currentTradePool.add(trade);
+
+            log();
+
         }
+
+
 
 
 
