@@ -11,6 +11,7 @@ import utils.Printer;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -41,7 +42,7 @@ public class BlockChainNet {
      * 当前工作量证明
      */
     public static String currentProof = "";
-
+    public static AtomicLong index = new AtomicLong();
 
     /**
      * 节点们
@@ -89,7 +90,7 @@ public class BlockChainNet {
                  */
                 Block block = new Block();
                 block.setHash(hashed);
-
+                block.setIndex(index.addAndGet(1));
                 Block previous = JSON.parseObject(currentBlock,new TypeReference<Block>(){});
                 block.setPrevious(previous.getHash());
                 block.setTrade(currentTraddes);
@@ -188,7 +189,7 @@ public class BlockChainNet {
             String hash = MD5Utils.getMD5(proof);
             block.setProof(proof);
             block.setHash(hash);
-
+            block.setIndex(0L);
             currentBlock = JSON.toJSONString(block);
             currentProof = proof;
             blockPool.put(hash,JSON.toJSONString(block));

@@ -24,6 +24,20 @@ public class Block {
     private List<Trade> trade = new ArrayList<>();
 
 
+    /**
+     * 区块的位置
+     */
+    private Long index;
+
+
+    public Long getIndex() {
+        return index;
+    }
+
+    public void setIndex(Long index) {
+        this.index = index;
+    }
+
     public String getProof() {
         return proof;
     }
