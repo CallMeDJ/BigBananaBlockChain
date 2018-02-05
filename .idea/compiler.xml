@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="BigBananaBlockChain" />
+        <module name="big-banana-block-chain" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8">
-      <module name="BigBananaBlockChain" target="1.8" />
+    <bytecodeTargetLevel>
+      <module name="big-banana-block-chain" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

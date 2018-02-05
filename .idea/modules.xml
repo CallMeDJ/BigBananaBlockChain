@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BigBananaBlockChain.iml" filepath="$PROJECT_DIR$/BigBananaBlockChain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/big-banana-block-chain.iml" filepath="$PROJECT_DIR$/big-banana-block-chain.iml" />
     </modules>
   </component>
 </project>

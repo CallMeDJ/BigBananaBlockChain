@@ -241,21 +241,24 @@ public class BlockChainNet {
         Scanner scanner = new Scanner(System.in);
 
         while (scanner.hasNext()){
+            try {
+                String a = scanner.nextLine();
 
-            String a = scanner.nextLine();
+                String[] commans = a.split(" ");
 
-            String[] commans = a.split(" ");
+                String from = commans[0];
+                String to = commans[1];
+                Long what = Long.valueOf(commans[2]);
+                Trade trade = new Trade(from, to, what);
+                MoneyBags.bags.get(from).addAndGet(-1 * what);
+                MoneyBags.bags.get(to).addAndGet(what);
+                currentTradePool.add(trade);
 
-            String from = commans[0];
-            String to = commans[1];
-            Long what = Long.valueOf(commans[2]);
-            Trade trade = new Trade(from,to,what);
-            MoneyBags.bags.get(from).addAndGet(-1 * what);
-            MoneyBags.bags.get(to).addAndGet(what);
-            currentTradePool.add(trade);
-
-            log();
-
+                log();
+            }
+            catch (Exception e){
+                Printer.print("输入格式错误,请输入  from  to  what 。如 从A转给B两个币格式为。。 \t\n   A B 2    ");
+            }
         }
 
 
